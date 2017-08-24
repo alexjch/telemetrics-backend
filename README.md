@@ -7,8 +7,8 @@ This project provides the server-side component of a complete telemetrics
 client-side component source repository lives at
 https://github.com/clearlinux/telemetrics-client.
 
-It consists of two Flask applications: an ingestion app, [`collector`](collector/README.md), for
-records received from telemetrics-client probes; and a web app, [`telemetryui`](telemetryui/README.md),
+It consists of two Flask applications: an ingestion app, [`collector`](collector), for
+records received from telemetrics-client probes; and a web app, [`telemetryui`](telemetryui),
 that exposes several views to visualize the telemetry data. The `telemetryui`
 app also provides a REST API to perform queries on the data.
 
@@ -146,16 +146,16 @@ the `listen 443 ssl`, `ssl_certificate`, `ssl_certificate_key`,
 
 ### TID configuration
 
-For collector TID configuration see details [here](collector/README.md)
+For collector TID configuration see details [here](collector/)
 
 
 ## Telemtryui
 
-For more details about `telemetryui` and REST API click [here](telemetryui/README.md)
+For more details about `telemetryui` and REST API click [here](telemetryui/)
 
 ## Collector
 
-For more details about `collector` click [here](collector/README.md)
+For more details about `collector` click [here](collector/)
 
 ## Software License
 
