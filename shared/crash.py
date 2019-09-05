@@ -22,13 +22,6 @@ import re
 from .model import Record, GuiltyBlacklist
 from . import app
 
-try:
-    from uwsgidecorators import spool
-except ImportError:
-    def spool(f):
-        f.spool = f
-        return f
-
 filters = []
 
 # Groups for the frame_pattern below
@@ -250,9 +243,13 @@ def _process_guilties(args):
         Record.commit_guilty_changes()
 
 
-@spool
-def process_guilties(args):
-    _process_guilties(args)
+try:
+    from uwsgidecorators import spool
+    process_guilties = spool(_process_guilties)
+except ModuleNotFoundError as err:
+    print('Unable to use async spool decorator')
+    def process_guilties(**args):
+        _process_guilties(args)
 
 
 def process_guilties_sync(**args):
