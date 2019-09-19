@@ -1,8 +1,11 @@
 #!/bin/bash
 
-export FLASK_APP=/var/www/telemetry/telemetryui/run.py
-pushd /var/www/telemetry/telemetryui/
+WEBAPP_ROOT=/var/www/telemetrics-backend-latest/telemetryui
 
-flask db upgrade
-uwsgi --http 0.0.0.0:5000 --chdir /var/www/telemetry/telemetryui/ -w telemetryui:app \
-      --spooler /var/www/telemetry/telemetryui/uwsgi-spool --py-autoreload 1
+# Apply upgrade
+pushd ${WEBAPP_ROOT} && \
+      FLASK_APP=${WEBAPP_ROOT}/run.py flask db upgrade
+
+# Start application
+uwsgi --http 0.0.0.0:5000 --chdir ${WEBAPP_ROOT} --uid webapp \
+      --module telemetryui:app --spooler ${WEBAPP_ROOT}/uwsgi-spool

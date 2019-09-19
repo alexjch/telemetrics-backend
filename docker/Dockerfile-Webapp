@@ -1,0 +1,33 @@
+# Copyright (C) 2019 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+FROM clearlinux:latest
+
+# Get python requirements for application
+#ADD https://raw.githubusercontent.com/clearlinux/telemetrics-backend/latest/requirements.txt /tmp/requirements.txt
+ADD requirements.txt /tmp/requirements.txt
+
+# Install dependencies
+RUN swupd bundle-add sudo uwsgi python-basic curl
+
+# Install python dependencies
+RUN pip3 install -r /tmp/requirements.txt
+
+# Install application
+RUN mkdir -p /var/www \
+    && curl -sL https://github.com/clearlinux/telemetrics-backend/archive/latest.tar.gz \
+    | tar -xz --directory /var/www \
+    && mkdir /var/www/telemetrics-backend-latest/telemetryui/uwsgi-spool
+
+# Add entrypoint command
+COPY entrypoint.sh /var/www/telemetrics-backend-latest/
+
+# TODO: Remove following line when this patch goes out
+COPY config_local.py /var/www/telemetrics-backend-latest/telemetryui/telemetryui/.
+
+# New user
+RUN useradd --system webapp --uid 9999
+
+# Set permissions
+RUN chown -R webapp:webapp /var/www/telemetrics-backend-latest/ \
+    && chmod -R ugo-w,u+x,go-x /var/www/telemetrics-backend-latest/ \
+    && chmod u+w /var/www/telemetrics-backend-latest/telemetryui/uwsgi-spool

@@ -6,16 +6,27 @@ services:
        POSTGRES_DB: telemetry
        POSTGRES_USER: postgres
        POSTGRES_PASSWORD: postgres
-  app:
+  redis:
+    image: redis:latest
+  collector:
+    restart: always
+    depends_on:
+       - db
+    ports:
+       - 5001:5001
     build:
        context: ${PWD}
-       dockerfile: ./docker/Dockerfile
-    environment:
-       FLASK_APP: /var/www/telemetry/telemetryui/run.py
+       dockerfile: Dockerfile-Collector
+    image: collector/clr-telemetry:1.0
+  webapp:
+    restart: always
     depends_on:
       - db
+      - redis
     ports:
       - 5000:5000
-    volumes:
-      - ${PWD}:/var/www/telemetry
-    command: /usr/bin/bash /var/www/telemetry/docker/entrypoint.sh
+    build:
+       context: ${PWD}
+       dockerfile: Dockerfile-Webapp
+    image: webapp/clr-telemetry:1.0
+    command: /usr/bin/bash /var/www/telemetrics-backend-latest/entrypoint.sh
