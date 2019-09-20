@@ -3,8 +3,7 @@
 FROM clearlinux:latest
 
 # Get python requirements for application
-#ADD https://raw.githubusercontent.com/clearlinux/telemetrics-backend/latest/requirements.txt /tmp/requirements.txt
-ADD requirements.txt /tmp/requirements.txt
+ADD https://raw.githubusercontent.com/alexjch/telemetrics-backend/latest/requirements.txt /tmp/requirements.txt
 
 # Install dependencies
 RUN swupd bundle-add sudo uwsgi python-basic curl
@@ -14,12 +13,12 @@ RUN pip3 install -r /tmp/requirements.txt
 
 # Install application
 RUN mkdir -p /var/www \
-    && curl -sL https://github.com/clearlinux/telemetrics-backend/archive/latest.tar.gz \
+    && curl -sL https://github.com/alexjch/telemetrics-backend/archive/latest.tar.gz \
     | tar -xz --directory /var/www \
     && mkdir /var/www/telemetrics-backend-latest/collector/uwsgi-spool
 
-# TODO: Remove this line when sending patch
-COPY config_local.py /var/www/telemetrics-backend-latest/collector/collector/.
+# Configuration
+COPY config.py /var/www/telemetrics-backend-latest/collector/collector/.
 
 # New user
 RUN useradd --system app --uid 9999

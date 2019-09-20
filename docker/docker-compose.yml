@@ -18,6 +18,10 @@ services:
        context: ${PWD}
        dockerfile: Dockerfile-Collector
     image: collector/clr-telemetry:1.0
+    environment:
+       POSTGRES_USER: postgres
+       POSTGRES_PASSWORD: postgres
+       POSTGRES_HOST: db
   webapp:
     restart: always
     depends_on:
@@ -29,4 +33,9 @@ services:
        context: ${PWD}
        dockerfile: Dockerfile-Webapp
     image: webapp/clr-telemetry:1.0
+    environment:
+       POSTGRES_USER: postgres
+       POSTGRES_PASSWORD: postgres
+       POSTGRES_HOST: db
+       REDIS_HOST: redis
     command: /usr/bin/bash /var/www/telemetrics-backend-latest/entrypoint.sh
