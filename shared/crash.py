@@ -27,8 +27,9 @@ try:
     from uwsgidecorators import spool
 except ImportError:
     def spool(f):
-        f.spool = f
-        return f
+        def wrapper(**args):
+            f(args)
+        return wrapper
 
 filters = []
 
