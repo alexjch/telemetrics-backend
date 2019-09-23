@@ -1,0 +1,16 @@
+# Copyright (C) 2019 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+FROM clearlinux:latest
+
+# python requirements
+ADD requirements.txt /tmp/requirements.txt
+
+# Install dependencies
+RUN swupd bundle-add --quiet uwsgi python-basic
+
+# Install python dependencies
+RUN pip3 install -r /tmp/requirements.txt
+
+# Start application
+CMD ["uwsgi","--http","0.0.0.0:5001","--chdir","/var/www/telemetry/collector/",\
+"--module","collector:app","--spooler","/var/www/telemetry/collector/uwsgi-spool"]

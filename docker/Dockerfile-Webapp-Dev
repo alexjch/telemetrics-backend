@@ -1,0 +1,18 @@
+# Copyright (C) 2019 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+FROM clearlinux:latest
+
+# python requirements
+ADD requirements.txt /tmp/requirements.txt
+
+# Install dependencies
+RUN swupd bundle-add --quiet python-basic uwsgi
+
+# Install python dependencies
+RUN pip3 install -r /tmp/requirements.txt
+
+# New user
+RUN useradd --system webapp --uid 9999
+
+# Start app
+CMD ["/usr/bin/bash", "/var/www/telemetry/docker/entrypoint.sh"]

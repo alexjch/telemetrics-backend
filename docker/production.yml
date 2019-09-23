@@ -1,0 +1,31 @@
+# Copyright © 2019 Intel Corporation
+#
+# SPDX-License-Identifier: GPL-3.0-only
+version: '3.1'
+services:
+  db:
+    image: postgres:10
+    environment:
+       POSTGRES_DB: telemetry
+       POSTGRES_USER: postgres
+       POSTGRES_PASSWORD: postgres
+  collector:
+    image: clr-telemetry/collector:1.0
+    depends_on:
+       - db
+    build:
+       context: ${PWD}/docker
+       dockerfile: Dockerfile-Collector
+    environment:
+       FLASK_APP: "collector:app"
+  webapp:
+    image: clr-telemetry/webapp:1.0
+    depends_on:
+      - db
+      - redis
+    build:
+       context: ${PWD}/docker
+       dockerfile: Dockerfile-Webapp
+    environment:
+       ROOTDIR: /var/www/telemetrics-backend-latest
+       FLASK_APP: /var/www/telemetrics-backend-latest/telemetryui/run.py

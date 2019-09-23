@@ -1,11 +1,12 @@
 #!/bin/bash
-
-WEBAPP_ROOT=/var/www/telemetrics-backend-latest/telemetryui
+# Copyright © 2019 Intel Corporation
+#
+# SPDX-License-Identifier: GPL-3.0-only
 
 # Apply upgrade
-pushd ${WEBAPP_ROOT} && \
-      FLASK_APP=${WEBAPP_ROOT}/run.py flask db upgrade
+pushd ${ROOTDIR}/telemetryui && \
+      FLASK_APP=${ROOTDIR}/telemetryui/run.py flask db upgrade
 
 # Start application
-uwsgi --http 0.0.0.0:5000 --chdir ${WEBAPP_ROOT} --uid webapp \
-      --module telemetryui:app --spooler ${WEBAPP_ROOT}/uwsgi-spool
+/usr/bin/uwsgi --http 0.0.0.0:5000 --chdir ${ROOTDIR}/telemetryui --uid webapp \
+               --module telemetryui:app --spooler ${ROOTDIR}/telemetryui/uwsgi-spool
